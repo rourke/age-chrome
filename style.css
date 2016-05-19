@@ -1,0 +1,128 @@
+#wiki-body.guide-page ol > li:hover{
+	background-color: #f2f2f2;
+	cursor: pointer;
+}
+#wiki-body.guide-page ol > li.age-checked:hover{
+	background-color: #C5E8BA;
+	cursor: pointer;
+	color: #333;
+	list-style-image: none; 
+}
+#wiki-body.guide-page ol > li.age-checked:hover a{
+	color: #4078c0;
+}
+#wiki-body.guide-page ol > li.age-checked{
+	background-color: #E1F5DA;
+	color: #737373;
+	list-style-image: url(chrome-extension://__MSG_@@extension_id__/images/check.png);
+}
+#wiki-body.guide-page ol > li.age-checked li{
+	list-style-image: none;
+}
+#wiki-body.guide-page ol > li.age-checked a{
+	color: #737373;
+}
+#wiki-body.guide-page .age-header{
+	font-size: 12px;
+	font-weight: normal;
+	float:right;
+	margin-top: 3px;
+}
+#wiki-body.guide-page .age-header img{
+	vertical-align: -3px;
+}
+#age-index{
+	margin-top: 0;
+    margin-bottom: 16px;
+}
+#age-index ul{
+	list-style-type: none;
+	padding-left: 0px;
+}
+#age-index ul li{
+	width: 200px;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+#age-index ul li.age-header-indent-h3{
+	padding-left: 3px;
+}
+#age-index ul li.age-header-indent-h4{
+	padding-left: 6px;
+}
+#age-index ul li.age-header-indent-h5{
+	padding-left: 9px;
+}
+#age-sticky div.wiki-custom-sidebar hr{
+	height: 2px;
+}
+
+#age-sticky.stick {
+	width: 230px;
+    margin-top: 0 !important;
+    position: fixed;
+    top: 0;
+    z-index: 400;
+	padding-top: 10px;
+	background-color: white;
+}
+#age-sticky.stick .wiki-custom-sidebar{
+	margin-bottom: 0px;
+	overflow-y: auto;
+}
+
+#age-btn-options-open{
+	color: #C04040;
+}
+
+#age-options-overlay {
+    position: fixed; 
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #000;
+    opacity: 0.5;
+    filter: alpha(opacity=50);
+	z-index: 500;
+	display: none;
+}
+#age-options {
+    position:absolute;
+    background:rgba(0,0,0,0.2);
+    border-radius:14px;
+    padding:8px;
+	z-index: 600;
+	width: 500px;
+	display: none;
+}
+#age-options-content {
+    border-radius:8px;
+    background:#fff;
+    padding:20px;
+}
+#age-btn-options-close {
+    position:absolute;
+    background:url("chrome-extension://__MSG_@@extension_id__/images/close.png") 0 0 no-repeat;
+    width:24px;
+    height:27px;
+    display:block;
+    text-indent:-9999px;
+    top:-7px;
+    right:-7px;
+}
+.stop-scrolling {
+	height: 100%;
+	overflow: hidden;
+}
+#age-options-delete-cookie-confirmed{
+	color: green;
+	display: none;
+}
+#age-options div.boxed-group{
+	margin-bottom: 20px;
+}
+#age-options div.boxed-group.dangerzone{
+	margin-bottom: 0px;
+}
