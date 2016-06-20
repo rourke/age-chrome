@@ -14,16 +14,17 @@ $(function() {
 	else if(title.indexOf("Part 5") != -1){ part = 5; }
 	else if(title.indexOf("9.2.0 Update") != -1){ part = 6; }
 	else if(title.indexOf("Region Changing") != -1){ part = 7; }
-	else if(title.indexOf("Hardmod Downgrade") != -1){ part = 8; } // See below: Reset steps
+	else if(title.indexOf("Hardmod Downgrade") != -1){ part = 8; }
+	else if(title.indexOf("Updating arm9loaderhax") != -1){ part = 9; } // See below: Reset steps
 	
 	// guidePage = Used to decide if this is actually part 1-5 of the guide
 	var guidePage = (part > 0 ? true : false);
 	
 	var partURLs = [];
 	partURLs[1] = 'https://github.com/Plailect/Guide/wiki/Part-1-(Homebrew)';
-	partURLs[2] = 'https://github.com/Plailect/Guide/wiki/Part-2-(Downgrading)';
+	partURLs[2] = 'https://github.com/Plailect/Guide/wiki/Part-2-(9.2.0-Downgrade)';
 	partURLs[3] = 'https://github.com/Plailect/Guide/wiki/Part-3-(RedNAND)';
-	partURLs[4] = 'https://github.com/Plailect/Guide/wiki/Part-4-(Getting-the-OTP)';
+	partURLs[4] = 'https://github.com/Plailect/Guide/wiki/Part-4-(2.1.0-Downgrade)';
 	partURLs[5] = 'https://github.com/Plailect/Guide/wiki/Part-5-(arm9loaderhax)';
 	
 	/* ======================= */
@@ -32,6 +33,7 @@ $(function() {
 	
 	var cookieData = readCookie('age-data');
 	var dataArray, options;
+	
 	// Cookie does not exist
 	if(cookieData == null){
 		cookieData = {};
@@ -53,6 +55,7 @@ $(function() {
 		// Load options
 		options = cookieData['options'];
 		
+		// Some Guide Page stuff only
 		if(guidePage){
 			// Cookie does exist, but no part data
 			if(!(part in cookieData)){
@@ -130,10 +133,12 @@ $(function() {
 	if(lastPart != 0 && lastStep != 0){
 		$('#age-menu-options').append('<a href="' + partURLs[lastPart] + '#age-li-' + lastStep + '" id="age-btn-continue">Continue guide</a><br>');
 	}
+	
+	// If Continue Guide button is pressed this will jump to the list-item, after the id's have been attached
 	var hash = window.location.hash;
 	if(hash) {
 		if(hash.indexOf('age-li') != -1){
-			$('html, body').scrollTop($(hash).offset().top);
+			$('html, body').scrollTop(($(hash).offset().top - 150));
 		}
 	}
 	
@@ -179,7 +184,7 @@ $(function() {
 	// Reset steps
 	$('#age-options').on('click', '#age-btn-reset-steps', function(e){
 		
-		for(i=8; i > 0; i--){
+		for(i=9; i > 0; i--){
 			delete cookieData[i];
 		}
 		
@@ -220,7 +225,10 @@ $(function() {
 	
 	// Keyboard shortcuts
 	$(document).on('keyup', function(e){
-		if(options['keyboard-shortcuts']){
+		
+		// Disable key presses when in input field
+		var tag = e.target.tagName.toLowerCase();
+		if(options['keyboard-shortcuts'] && tag != 'input'){
 			// 1-5 keys
 			if(e.which >= 49 && e.which <= 53){
 				var goToPart = e.which - 48;
@@ -232,17 +240,42 @@ $(function() {
 			}
 			// left arrow key = previous
 			else if(e.which == 37 && part > 1){
-				if(guidePage){
+				if(part >= 1 && part <= 5){
 					var goToPart = part - 1;
 					location.href = partURLs[goToPart];
 				}
 			}
 			// right arrow key = next
 			else if(e.which == 39 && part < 5){
-				if(guidePage){
+				if(part >= 1 && part <= 5){
 					var goToPart = part + 1;
 					location.href = partURLs[goToPart];
 				}
+			}
+			// w = complete the next list-item
+			else if(e.which == 87 && guidePage){
+				var lis = $('#wiki-body .markdown-body > ol > li:not(.age-checked)');
+				if(lis.length > 0){
+					var firstli = lis.first();
+					firstli.addClass('age-checked');
+					storeData();
+					$('html, body').stop().animate( {scrollTop : (firstli.offset().top - 150)}, 50 );
+				}
+			}
+			// q = uncomplete the last list-item
+			else if(e.which == 81 && guidePage){
+				var lis = $('#wiki-body .markdown-body > ol > li.age-checked');
+				if(lis.length > 0){
+					var lastli = lis.last();
+					lastli.removeClass('age-checked');
+					storeData();
+					$('html, body').stop().animate( {scrollTop : (lastli.prev().offset().top - 150)}, 50 );
+				}
+			}
+			// g = continue guide
+			else if(e.which == 71){
+				var url = $('#age-btn-continue').attr('href');
+				location.href = url;
 			}
 		}
 	})
@@ -318,7 +351,7 @@ $(function() {
 		} else {
 			expires = "";
 		}
-		document.cookie = encodeURIComponent(name) + "=" + encodeURIComponent(value) + expires + "; path=/Plailect/Guide/wiki/";
+		document.cookie = encodeURIComponent(name) + "=" + encodeURIComponent(value) + expires + "; path=/Plailect/Guide/";
 	}
 
 	// Read cookie function
@@ -391,8 +424,11 @@ $(function() {
 	
 	// Load the options.html into the page
 	var optionsURL = chrome.extension.getURL("options.html");
-	$.get(optionsURL, function(data){
+	var request = new XMLHttpRequest();
+	request.onload = function(e) {
+		var data = request.responseText;
 		$('#age-options-content').html(data);
+		// Set options
 		if(options['sticky-menu']){
 			$('#age-options-sticky-menu').prop('checked', true);
 		}
@@ -402,7 +438,9 @@ $(function() {
 		if(options['index']){
 			$('#age-options-index').prop('checked', true);
 		}
-	});
+	}
+	request.open("GET", optionsURL);
+	request.send();
 	
 	// Open options
 	function openOptions(){

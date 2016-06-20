@@ -126,3 +126,6 @@
 #age-options div.boxed-group.dangerzone{
 	margin-bottom: 0px;
 }
+#age-options p.note{
+	margin: 5px 0;
+}
